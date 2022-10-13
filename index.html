@@ -22,11 +22,11 @@
         University of Chicago<sup>1</sup>, Tel Aviv University<sup>2</sup>, Toyota Technical Institute at Chicago<sup>3</sup>
       </p>
       <div class="links has-text-centered">
-        <a href="https://arxiv.org"
+        <a href="https://arxiv.org/abs/2210.05735"
             class="external-link button is-normal">
           <span>Paper</span>
         </a>
-        <a href="https://github.com/ChocolateBiscuit/MeshGAN"
+        <a href="https://github.com/threedle/tetGAN"
             class="external-link button is-normal">
           <span>Code</span>
         </a>
@@ -34,16 +34,14 @@
     </section>
 
     <section class="container is-medium has-text-centered">
-      <img class="has-ratio" width="640" height="360" src="static/images/teaserAsset 1.png">
+      <img class="has-ratio" width="640" height="360" src="static/images/teaser-slices.png">
       <p class="box has-text-left p-6">
-        We present TetGAN, a convolutional neural network designed to generate tetrahedral meshes. <br></br>Our framework 
-        synthesizes new tetrahedral meshes, and edits existing tetrahedral meshes through latent-space manipulations. 
-        We represent shapes using an irregular grid of explicit tetrahedra that encode an occupancy and displacement field. 
-        Our formulation enables defining tetrahedral convolution, pooling, and unpooling operations to synthesize explicit 
-        mesh connectivity with variable topological genus. The proposed neural network layers learn deep features over each 
-        tetrahedron, and learns to extract patterns within spatial regions across multiple scales. We illustrate the 
-        capabilities of our technique to generate novel and diverse tetrahedral meshes. We also demonstrate the utility of 
-        our learned latent space by editing existing tetrahedral meshes. 
+        We present TetGAN, a convolutional neural network designed to generate tetrahedral meshes. <br></br>We represent shapes 
+        using an irregular tetrahedral grid which encodes an occupancy and displacement field. Our formulation enables defining 
+        tetrahedral convolution, pooling, and upsampling operations to synthesize explicit mesh connectivity with variable 
+        topological genus. The proposed neural network layers learn deep features over each tetrahedron and learn to extract 
+        patterns within spatial regions across multiple scales. We illustrate the capabilities of our technique to encode 
+        tetrahedral meshes into a semantically meaningful latent-space which can be used for shape editing and synthesis.
       </p>
     </section>
  
