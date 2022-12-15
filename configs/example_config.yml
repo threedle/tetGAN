@@ -1,0 +1,46 @@
+num_gpus: 1
+
+# Input paths
+initial_grid_path: ../grids/cube_0.20.tet
+dataset_path: ../data/
+
+# Logging
+log_dir: ../logs
+
+# Data settings
+subdivision_depth: 3
+
+# (V)AE settings
+dim_multiplier: 64
+code_size: 512
+is_variational: 1
+upsampling: interpolate
+per_tet_latent: 0
+per_tet_latent_size: -1
+num_convs: 4
+
+# Discriminator settings
+local_discriminator_num_convs: 6
+local_discriminator_dim_mult: 16
+global_discriminator_dim_mult: 64
+local_discriminator_coefficient: 4.0
+global_discriminator_coefficient: 0.01
+
+# Gradient penalty settings
+gradient_penalty_coefficient: 10.0
+adapt_local_gradient_penalty: 1
+adapt_global_gradient_penalty: 1
+adapt_gradient_penalty_base_range: 40
+adapt_gradient_penalty_num_smallest: 10
+adapt_gradient_penalty_window: 5
+
+# Training settings
+num_epochs: 100
+batch_size: 30
+discriminator_batches_per_generator_batch: 3
+gen_lr: 0.0001
+gen_beta0: 0.0
+gen_beta1: 0.9
+dis_lr: 0.0001
+dis_beta0: 0.0
+dis_beta1: 0.9

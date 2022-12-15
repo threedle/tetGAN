@@ -1,22 +1,84 @@
 # Under Construction -- Coming soon!
 
-# TetGAN
+# TetGAN [[Project  Page](https://threedle.github.io/tetGAN/)]
+[![arXiv](https://img.shields.io/badge/arXiv-TetGAN-b31b1b.svg)](https://arxiv.org/abs/2210.05735)
 
-TetGAN is a convolutional neural network for tetrahedral mesh generation. Our framework synthesizes new tetrahedral meshes, and edits existing tetrahedral meshes through latent-space manipulations
+![couch](./images/tetgan.gif)
 
-# Getting Started
+This repository contains code from the paper [TetGAN: A Convolutional Neural Network for Tetrahedral Mesh Generation](https://arxiv.org/abs/2210.05735). The proposed neural network layers learn deep features over each tetrahedron and learn to extract patterns within spatial regions across multiple scales. We illustrate the capabilities of our technique to encode tetrahedral meshes into a semantically meaningful latent-space which can be used for shape editing and synthesis.
 
-### Installation
-- clone this repo
-- install dependencies
-### Data
-- get preprocessed data (or process it yourself)
-### Usage
-- run pretrained models (or train it yourself)
-- run inference
-- latent operations
-- evalution
+
+## Installation
+Install all dependencies using [anaconda](https://www.anaconda.com/) and the `env.yml` file provided.
+
+    conda env create -f env.yml
+    conda activate tetGAN
+
+
+## Data
+To train TetGAN, we need files specifying the meshes in the dataset and an initial tetrahedral grid.
+
+### Tetrahedral Grid Files
+We generate tetrahedral grids by passing a unit cube (with corners at (0, 0, 0) and (1, 1, 1)) to [quartet](https://github.com/crawforddoran/quartet). We have provided examples of these grids in `tetGAN/grids`. Each file is named `cube_{p}.tet` where `p` specifies a resolution parameter passed to quartet.
+
+### Mesh Data
+There are two options regarding mesh data:
+
+1. You may download our preprocessed data (coming soon)
+2. You may provide a directory of mesh files to our preprocessing script.
+
+
+### Preprocessed Data
+We provide preprocessed data on various ShapeNet categories. Upload coming soon.
+
+### Build Your Own Data
+You may build your own dataset through the following:
+
+1. Create a directory containing all of the training meshes.
+
+        training_data
+        |- 000.obj
+        |- 001.obj
+        |- 002.obj
+        |- ...
+
+2. Pass this directory to the `main` script in `src/data.py`, also specifying an initial grid file and a subdivision depth.
+
+**IMPORTANT NOTE:** The routine we use to compute occupancies requires that input meshes be watertight and manifold. We use the [Watertight Manifold repository](https://github.com/hjwdzh/Manifold) to preprocess ShapeNet objects. The accuracy of the occupancy labels is **not** guaranteed for non-manifold shapes.
+
+The processed data comes in the form of a folder containing 3 pickled tensors per mesh file. 
+
+        processed_data
+        |- 000
+        |-|- occ.pt
+        |-|- def.pt
+        |-|- def_c.pthttps://github.com/hjwdzh/Manifold
+        |- ...
+## Training
+To train a model, use `src/main.py` which accepts a config file as well as command-line arguments. We have provided an example config used to produce our paper results: `configs/example_config.yml`. Any arguments specified by the config file will be overriden by command-line arguments. 
+
+    # Train with example config on processed data
+    python src/main.py --config configs/example_config.yml --dataset_path ./data/processed_data
+
+    # Train with example config, but change the number of epochs and batch size
+    python src/main.py --config configs/example_config.yml --num_epochs 200 --batch_size 15
+
+    # Train with example config, but alter the training resolution by changing the initial grid and the subdivision depth
+    python src/main.py --config configs/example_config.yml --initial_grid ./grids/cube_0.25.tet --subdivision_depth 4
+
+## Mesh Extraction
+To extract a mesh from network output, refer to the function `extract_mesh` in `src/nets.py`. Calling this function with a network and some output generates either a `TriangleMesh` or a `TetMesh` object which then may be written to file through their respective I/O functions.
 
 # Citation
+
+
+    @inproceedings{tetGAN,
+        title = {TetGAN: A Convolutional Neural Network for Tetrahedral Mesh Generation},
+        author = {Gao, Wang, Metzer, Yeh, Hanocka},
+        booktitle = {Proceedings British Machine Vision Conference (BMVC)},
+        year = {2022}
+    }
+
+
 # Questions / Issues
 If you have questions or issues regarding this code, please open an issue.
