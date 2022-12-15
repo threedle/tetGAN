@@ -50,7 +50,7 @@ The processed data comes in the form of a folder containing 3 pickled tensors pe
         |- 000
         |-|- occ.pt
         |-|- def.pt
-        |-|- def_c.pthttps://github.com/hjwdzh/Manifold
+        |-|- def_c.pt
         |- ...
 ## Training
 To train a model, use `src/main.py` which accepts a config file as well as command-line arguments. We have provided an example config used to produce our paper results: `configs/example_config.yml`. Any arguments specified by the config file will be overriden by command-line arguments. 
@@ -64,8 +64,33 @@ To train a model, use `src/main.py` which accepts a config file as well as comma
     # Train with example config, but alter the training resolution by changing the initial grid and the subdivision depth
     python src/main.py --config configs/example_config.yml --initial_grid ./grids/cube_0.25.tet --subdivision_depth 4
 
-## Mesh Extraction
+## Inference and Mesh Extraction
+To perform inference, one may either sample from the latent distribution or encode and decode a shape. Here, we provide an example code snippet of these operations.
+
+    # The variable vae is a trained network
+    # Sample a latent code and decode it
+
+    dist = torch.distributions.normal.Normal(0.0, 1.0)
+    sample = dist.sample(sample_shape=(1, cfg['code_size']))
+    decoded = vae.decode(sample)
+
+    # Encode and decode a shape
+    # The variable feat are the occupancies and centroid deformations computed for the mesh
+
+    encoded = vae.encode(feat.unsqueeze(0))[0]
+    decoded = vae.decode(encoded)
+
+    # You may now use the encoding for latent operations such as arithmetic/interpolation
+
+    encoded_1 = vae.encode(feat_1.unsqueeze(0))[0]
+    decoded = vae.decode((encoded + encoded_1) / 2)
+    
 To extract a mesh from network output, refer to the function `extract_mesh` in `src/nets.py`. Calling this function with a network and some output generates either a `TriangleMesh` or a `TetMesh` object which then may be written to file through their respective I/O functions.
+
+    # Extract mesh from network output
+    extracted_surface = vae.extract_mesh(decoded, 'triangle', dataset.deformation_scalar, smoothing_iterations=2)
+    extracted_volume = vae.extract_mesh(decoded, 'tetrahedral', dataset.deformation_scakar, smoothing_iterations=2)
+
 
 # Citation
 
