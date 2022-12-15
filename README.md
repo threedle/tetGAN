@@ -1,5 +1,3 @@
-# Under Construction -- Coming soon!
-
 # TetGAN [[Project  Page](https://threedle.github.io/tetGAN/)]
 [![arXiv](https://img.shields.io/badge/arXiv-TetGAN-b31b1b.svg)](https://arxiv.org/abs/2210.05735)
 
