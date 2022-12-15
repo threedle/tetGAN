@@ -6,6 +6,7 @@ dataset_path: ../data/
 
 # Logging
 log_dir: ../logs
+checkpoint_frequency: 5
 
 # Data settings
 subdivision_depth: 3

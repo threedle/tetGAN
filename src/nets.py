@@ -277,12 +277,12 @@ class TetAutoEncoder(nn.Module):
     # Code to actually extract mesh from network output
     # Expects a 1 x T x C input where T is the number of tets and C is the number of channels
     # Deformation scalar is the scalar applied to the dataset in order to scale network predicts to [-1, 1]
-    def extract_mesh(self, network_output, mesh_type, deformation_scalar, smoothing_iterations):
+    def extract_mesh(self, network_output, mesh_type, deformation_scalar, smoothing_iterations, disable_progress=False):
         with torch.no_grad():
             occupancies = torch.sigmoid(network_output[:, :, 0]).cpu()
             deformations = self.calculate_deformation(network_output).squeeze().cpu() / deformation_scalar
             if mesh_type == 'triangle':
-                mesh = TriangleMesh.from_winding_nums_and_grid(occupancies, self.gs.grids[-1])
+                mesh = TriangleMesh.from_winding_nums_and_grid(occupancies, self.gs.grids[-1], disable_progress=disable_progress)
                 # Apply deformations
                 for idx, i in mesh.surface_to_grid.items():
                     mesh.vertices[idx].coord += deformations[i]
@@ -290,7 +290,7 @@ class TetAutoEncoder(nn.Module):
                 for _ in range(smoothing_iterations):
                     mesh.laplace_smoothing(deformations)
             elif mesh_type == 'tetrahedral':
-                mesh = TetMesh.from_winding_nums_and_grid(occupancies, self.gs.grids[-1], defs=deformations, ls=smoothing_iterations)
+                mesh = TetMesh.from_winding_nums_and_grid(occupancies, self.gs.grids[-1], defs=deformations, ls=smoothing_iterations, disable_progress=disable_progress)
             else:
                 raise ValueError('Specify either triangular (surface) or tetrahedral (volumetric) mesh as output')
         return mesh

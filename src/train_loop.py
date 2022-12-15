@@ -126,6 +126,8 @@ def train_loop(cfg):
     ea = EventAccumulator(tb.log_dir)
     ea.Reload()
 
+    os.makedirs(os.path.join(cfg['log_dir'], 'checkpoints'))
+
     dist = torch.distributions.normal.Normal(
         torch.tensor(0.0, device=default_device),
         torch.tensor(1.0, device=default_device)
@@ -331,3 +333,10 @@ def train_loop(cfg):
         tb.add_scalar('dis_l_gp', running_d_l_grad_penalty, epoch)
         tb.add_scalar('dis_g_loss', running_d_g_loss, epoch)
         tb.add_scalar('dis_g_gp', running_d_g_grad_penalty, epoch)
+        # Why is this necessary sometimes?
+        tb.flush()
+
+        if epoch > 0 and epoch % cfg['checkpoint_frequency'] == 0:
+            torch.save((vae.module if cfg['num_gpus'] > 0 else vae).state_dict(), os.path.join(cfg['log_dir'], 'checkpoints', f'gen_epoch_{epoch}.ckpt'))
+            torch.save((d_l.module if cfg['num_gpus'] > 0 else d_l).state_dict(), os.path.join(cfg['log_dir'], 'checkpoints', f'dis_l_epoch_{epoch}.ckpt'))
+            torch.save((d_g.module if cfg['num_gpus'] > 0 else d_g).state_dict(), os.path.join(cfg['log_dir'], 'checkpoints', f'dis_g_epoch_{epoch}.ckpt'))

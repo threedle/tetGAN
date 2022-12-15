@@ -65,7 +65,20 @@ To train a model, use `src/main.py` which accepts a config file as well as comma
     python src/main.py --config configs/example_config.yml --initial_grid ./grids/cube_0.25.tet --subdivision_depth 4
 
 ## Inference and Mesh Extraction
-To perform inference, one may either sample from the latent distribution or encode and decode a shape. Here, we provide an example code snippet of these operations.
+### Through our script
+We `src/predict.py` to sample shapes from a model checkpoint. This script accepts the training config file as input in order to instantiate a correct version of the network. See the following example usage:
+
+    # Use the training config as input
+    # Sample 20 shapes, using GPU, from the checkpoint ../logs/checkpoints/gen_epoch_100.ckpt
+    # Write the shapes as tetrahedral meshes
+    python predict.py --training_config ../configs/example_config.yml --gpu \ 
+        --checkpoint ../logs/checkpoints/gen_epoch_100.ckpt --num_samples 20 \
+        --out_dir ../logs/sampled_meshes --mesh_type tetrahedral --laplacian_smoothing 1
+
+Uploaded checkpoints of trained models from the paper are coming soon (with the processed data).
+
+### With your own code
+If you wish to write your own inference code, here we provide an example code snippet of these possible inference operations.
 
     # The variable vae is a trained network
     # Sample a latent code and decode it

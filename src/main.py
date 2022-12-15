@@ -16,6 +16,7 @@ def main():
 
     # Logging
     parser.add_argument('--log_dir', help='Directory to log tensorboard output to', type=str, default=argparse.SUPPRESS)
+    parser.add_argument('--checkpoint_frequency', help='Number of epochs between each model checkpoint', type=int, default=argparse.SUPPRESS)
 
     # Data settings
     parser.add_argument('--subdivision_depth', help='How many times to subdivide initial grid', type=int, default=argparse.SUPPRESS)
@@ -64,6 +65,11 @@ def main():
     # Replace config file args with any args specified through CLI
     for key in args:
         cfg[key] = args[key]
+
+    os.makedirs(cfg['log_dir'])
+    # Write final config to file
+    with open(os.path.join(cfg['log_dir'], 'config.yml'), 'w') as outfile:
+        yaml.dump(cfg, outfile, default_flow_style=False)
 
     train_loop(cfg)
     print("Done")
